@@ -37,7 +37,7 @@ project-folder/
 ## 💻 How to Use
 1. **Clone this repository**
    ```bash
-   git clone https://github.com/yourusername/aurora-stopwatch.git
+   git clone https://github.com/Vinayak-Chinchakhandi/SCT_WD_2.git
 2. Open index.html in your browser
 3. Click "Start" to begin timing
 4. Click "Lap" to record a lap
