@@ -26,10 +26,14 @@ A beautiful and responsive stopwatch web app featuring:
 
 ## 📂 File Structure
 project-folder/
+
 │
 ├── index.html # Main HTML file
+
 ├── style.css # Styling (Aurora background, responsiveness)
+
 ├── script.js # Stopwatch and lap logic
+
 └── README.md # Project documentation
 
 ---
