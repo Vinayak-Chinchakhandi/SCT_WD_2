@@ -28,6 +28,7 @@ A beautiful and responsive stopwatch web app featuring:
 project-folder/
 
 │
+
 ├── index.html # Main HTML file
 
 ├── style.css # Styling (Aurora background, responsiveness)
