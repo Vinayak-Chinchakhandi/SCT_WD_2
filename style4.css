@@ -1,0 +1,314 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #e9f3ff;
+  background: #05020a; /* fallback */
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+:root{
+  --indigo: 48, 31, 129;   /* rgb(48,31,129) */
+  --green: 44, 201, 130;   /* rgb(44,201,130) */
+  --purple: 138, 54, 175;  /* rgb(138,54,175) */
+  --blue: 16, 93, 255;     /* rgb(16,93,255) */
+}
+
+.app-wrap {
+  position: relative;
+  width: min(720px, 95vw);
+  max-width: 720px;
+  min-height: 420px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+  z-index: 2; /* above aurora layers */
+  gap: 1rem;
+  justify-items: center;
+  padding: 2rem;
+}
+
+.app-wrap::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center,
+              rgba(255,255,255,0.02) 0%,
+              rgba(0,0,0,0.25) 70%);
+  mix-blend-mode: multiply;
+  z-index: -1;
+}
+
+.aurora {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 220vmax;  /* extremely large so blur edges */
+  height: 220vmax;
+  transform: translate(-50%, -50%) rotate(0deg);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px) saturate(130%);
+  opacity: 0.95;
+}
+
+.aurora .band {
+  position: absolute;
+  inset: -20vmax;
+  border-radius: 50%;
+  will-change: transform, opacity;
+  mix-blend-mode: screen;
+}
+
+.aurora .b1 {
+  background: radial-gradient(circle at 30% 40%,
+              rgba(var(--indigo),0.95) 0%,
+              rgba(var(--indigo),0.7) 15%,
+              rgba(var(--indigo),0.15) 35%,
+              transparent 55%);
+  animation: float1 18s ease-in-out infinite;
+  transform: translate(-15%, -10%) scale(1);
+  opacity: 0.95;
+}
+
+.aurora .b2 {
+  background: radial-gradient(circle at 60% 55%,
+              rgba(var(--green),0.9) 0%,
+              rgba(var(--green),0.45) 12%,
+              rgba(var(--green),0.08) 30%,
+              transparent 55%);
+  animation: float2 22s ease-in-out infinite;
+  transform: translate(10%, 5%) scale(1.05);
+}
+
+.aurora .b3 {
+  background: radial-gradient(circle at 50% 20%,
+              rgba(var(--purple),0.9) 0%,
+              rgba(var(--purple),0.45) 12%,
+              rgba(var(--purple),0.06) 30%,
+              transparent 55%);
+  animation: float3 26s ease-in-out infinite;
+  transform: translate(-8%, 12%) scale(0.98);
+}
+
+.aurora .b4 {
+  background: radial-gradient(circle at 40% 65%,
+              rgba(var(--blue),0.85) 0%,
+              rgba(var(--blue),0.35) 12%,
+              rgba(var(--blue),0.06) 30%,
+              transparent 55%);
+  animation: float4 20s ease-in-out infinite;
+  transform: translate(5%, -6%) scale(1.02);
+}
+
+/* slow floating animations */
+@keyframes float1 {
+  0% { transform: translate(-15%, -10%) scale(1); }
+  50% { transform: translate(-12%, -18%) scale(1.03) rotate(6deg); }
+  100% { transform: translate(-15%, -10%) scale(1); }
+}
+@keyframes float2 {
+  0% { transform: translate(10%, 5%) scale(1.05) rotate(-4deg); }
+  50% { transform: translate(6%, 12%) scale(1.09) rotate(3deg); }
+  100% { transform: translate(10%, 5%) scale(1.05) rotate(-4deg); }
+}
+@keyframes float3 {
+  0% { transform: translate(-8%, 12%) scale(0.98) rotate(2deg); }
+  50% { transform: translate(-4%, 6%) scale(1.01) rotate(-5deg); }
+  100% { transform: translate(-8%, 12%) scale(0.98) rotate(2deg); }
+}
+@keyframes float4 {
+  0% { transform: translate(5%, -6%) scale(1.02); }
+  50% { transform: translate(12%, -3%) scale(1.06) rotate(4deg); }
+  100% { transform: translate(5%, -6%) scale(1.02); }
+}
+
+header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ecf6ff;
+  text-shadow: 0 6px 24px rgba(16,64,255,0.12);
+  letter-spacing: 0.4px;
+  z-index: 3;
+  align-self: start;
+}
+
+.stopwatch {
+  position: relative;
+  z-index: 3;
+  width: min(480px, 92%);
+  max-width: 520px;
+  border-radius: 18px;
+  padding: 1.8rem 1.6rem;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  backdrop-filter: blur(10px) saturate(110%);
+  box-shadow:
+     0 8px 30px rgba(3,8,24,0.6),
+     inset 0 1px 0 rgba(255,255,255,0.02);
+}
+
+.stopwatch::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -30px;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(100,140,255,0.12), transparent 40%);
+  filter: blur(18px);
+  z-index: -1;
+}
+
+/* Time display */
+#display {
+  font-size: 3.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #e9f7ff;
+  text-shadow: 0 8px 30px rgba(38, 96, 255, 0.14);
+  margin-bottom: 1rem;
+}
+
+/* controls */
+.controls {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: white;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  backdrop-filter: blur(2px);
+}
+
+#startPause {
+  background: linear-gradient(135deg, rgba(44,201,130,0.95), rgba(80,230,160,0.9));
+  box-shadow: 0 8px 30px rgba(44,201,130,0.12), 0 0 18px rgba(44,201,130,0.08);
+}
+#startPause:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 40px rgba(44,201,130,0.18); }
+
+#lap {
+  background: linear-gradient(135deg, rgba(138,54,175,0.95), rgba(190,93,210,0.9));
+  box-shadow: 0 8px 30px rgba(138,54,175,0.10);
+}
+#lap:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 40px rgba(138,54,175,0.16); }
+
+#reset {
+  background: linear-gradient(135deg, rgba(16,93,255,0.95), rgba(80,140,255,0.9));
+  box-shadow: 0 8px 30px rgba(16,93,255,0.10);
+}
+#reset:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 40px rgba(16,93,255,0.16); }
+
+#laps {
+  list-style: none;
+  max-height: 170px;
+  overflow: auto;
+  padding: 0.45rem;
+  margin-top: 0.6rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.lap-item {
+  padding: 0.45rem 0.65rem;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #e8f7ff;
+  box-shadow: 0 6px 15px rgba(15, 18, 40, 0.35);
+  transform-origin: left center;
+  animation: lapIn .38s ease;
+}
+@keyframes lapIn {
+  from { opacity: 0; transform: translateY(-8px) scale(.995); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.lap-fastest { outline: 2px solid rgba(44,201,130,0.15); box-shadow: 0 8px 30px rgba(44,201,130,0.06); }
+.lap-slowest { outline: 2px solid rgba(255,80,80,0.12); box-shadow: 0 8px 30px rgba(255,80,80,0.04); }
+
+@media (max-width: 560px) {
+  #display { font-size: 2.2rem; }
+  .app-wrap { padding: 1rem; }
+  .stopwatch { padding: 1.1rem; width: 94%; }
+  header { font-size: 1rem; }
+}
+
+button:focus { outline: 3px solid rgba(255,255,255,0.06); outline-offset: 3px; }
+
+.aurora { z-index: 0; pointer-events: none; }
+
+/* Make stopwatch container adapt to screen sizes */
+.stopwatch-container {
+    max-width: 90%;
+    width: 400px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Adjust font sizes for smaller devices */
+@media (max-width: 768px) {
+    .stopwatch {
+        font-size: 2rem;
+    }
+
+    .buttons button {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stopwatch {
+        font-size: 1.6rem;
+    }
+
+    .buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .buttons button {
+        width: 100%;
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-wrap {
+    max-width: 90vw; /* fits in small screens */
+}
+
+.stopwatch{
+    max-width: 90vw; /* fits in small screens */
+}
